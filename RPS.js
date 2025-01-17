@@ -1,44 +1,56 @@
 let humanScore = 0;
 let computerScore = 0;
+let humanSelection; // Declare globally
 
 function getComputerChoice() {
-    let choices = ["Rock","Paper","Scissors"];
-    const value = choices[Math.floor(Math.random() * choices.length)];
-    return value.toLowerCase();
+    const choices = ["rock", "paper", "scissors"];
+    return choices[Math.floor(Math.random() * choices.length)];
 }
 
-function getHumanChoice() {
-    let choice = prompt("> ");
-    return choice.toLowerCase();
+const buttonList = document.querySelectorAll("button");
+
+buttonList.forEach((button) => {
+    button.addEventListener("click", () => {
+        getHumanChoice(button);
+    });
+});
+
+function getHumanChoice(button) {
+    humanSelection = button.getAttribute("id").toLowerCase(); // Set the global choice
+    console.log(`Human selection: ${humanSelection}`);
+    playGame(); // Play the game immediately
 }
 
-function playRound(playerChoice,computerChoice) {
-    if(playerChoice === computerChoice) {
-        console.log("It's a tie!");
+function playRound(playerChoice, computerChoice) {
+    if (playerChoice === computerChoice) {
+        showResult("Tie!");
+        return; // Avoid further checks if it's a tie
     }
+
     if (
-        (playerChoice === 'rock' && computerChoice === 'scissors') ||
-        (playerChoice === 'scissors' && computerChoice === 'paper') ||
-        (playerChoice === 'paper' && computerChoice === 'rock')
-        ) {
+        (playerChoice === "rock" && computerChoice === "scissors") ||
+        (playerChoice === "scissors" && computerChoice === "paper") ||
+        (playerChoice === "paper" && computerChoice === "rock")
+    ) {
         humanScore++;
-        return 'You win!';
-        } 
-    else {
+        showResult("You Win!");
+    } else {
         computerScore++;
-        return 'You lose!';
-        }
-}
-
-function playGame(){
-    for(let i =0 ; i< 5; i++){
-        const humanSelection = getHumanChoice();
-        const computerSelection = getComputerChoice();
-        console.log(`You played ${humanSelection} and Computer played ${computerSelection}`)
-        playRound(humanSelection, computerSelection);        
+        showResult("You Lose!");
     }
-    console.log(`You: ${humanScore} vs Computer: ${computerScore}`)
 }
 
-playGame();
+function playGame() {
+    const computerSelection = getComputerChoice();
+    console.log(
+        `You played ${humanSelection} and Computer played ${computerSelection}`
+    );
+    playRound(humanSelection, computerSelection);
+}
 
+function showResult(text) {
+    const result = document.createElement("div");
+    result.textContent = `${text} (Human: ${humanScore}, Computer: ${computerScore})`;
+    result.setAttribute("style", "color: blue; background: pink; margin: 10px;");
+    document.querySelector("body").appendChild(result);
+}
